@@ -150,6 +150,11 @@ window.addEventListener("DOMContentLoaded", function(){
 		if(item.favorite[1] == "Yes") el('favorite').setAttribute("checked", "checked");
 		
 		changeFormat();
+		el('submit').removeEventListener("click", addEntity);
+		el('submit').value = "Update Release";
+/* 		el('submit').addEventListener("click", updateRelease); */
+		el('submit').key = this.key;
+		
 	}
 	
 	// Add dropdown menu
