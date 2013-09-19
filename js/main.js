@@ -115,7 +115,7 @@ window.addEventListener("DOMContentLoaded", function(){
 			editLink.innerHTML = "Edit Release Details";
 			editLink.key = localStorage.key(i);
 			editLink.href = "#";
-/* 			editLink.addEventListener('click', editRelease); */
+			editLink.addEventListener('click', editRelease);
 			editLi.appendChild(editLink);
 			entityDetails.appendChild(editLi);
 			var deleteLi = document.createElement('li');
@@ -127,6 +127,29 @@ window.addEventListener("DOMContentLoaded", function(){
 			deleteLi.appendChild(deleteLink);
 			entityDetails.appendChild(deleteLi);
 		}
+	}
+	
+	function editRelease() {
+		var item = JSON.parse(localStorage.getItem(this.key));
+		
+		el('artistName').value = item.artistName[1];
+		el('albumName').value = item.albumName[1];
+		el('releaseDate').value = item.releaseDate[1];
+		el('releaseType').value = item.releaseType[1];
+		/* Release Artist */
+		var artistReleaseOptions = document.forms[0].releaseArtists;
+		for (var i = 0; i < artistReleaseOptions.length; i++) {
+			if(artistReleaseOptions[i].value == "Single Artist" && item.releaseArtist[1] == "Single Artist") {
+				artistReleaseOptions[i].setAttribute("checked", "checked");
+			} else if(artistReleaseOptions[i].value == "Various Artists" && item.releaseArtist[1] == "Various Artists") {
+				artistReleaseOptions[i].setAttribute("checked", "checked");				
+			}
+		}
+		el('songCount').value = item.songCount[1];
+		el('opinion').value = item.opinion[1];
+		if(item.favorite[1] == "Yes") el('favorite').setAttribute("checked", "checked");
+		
+		changeFormat();
 	}
 	
 	// Add dropdown menu
