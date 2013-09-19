@@ -110,6 +110,22 @@ window.addEventListener("DOMContentLoaded", function(){
 				detailLi.innerHTML = entity[property][0] + entity[property][1];
 				entityDetails.appendChild(detailLi);
 			}
+			var editLi = document.createElement('li');
+			var editLink = document.createElement('a');
+			editLink.innerHTML = "Edit Release Details";
+			editLink.key = localStorage.key(i);
+			editLink.href = "#";
+/* 			editLink.addEventListener('click', editRelease); */
+			editLi.appendChild(editLink);
+			entityDetails.appendChild(editLi);
+			var deleteLi = document.createElement('li');
+			var deleteLink = document.createElement('a');
+			deleteLink.innerHTML = "Delete Release";
+			deleteLink.key = localStorage.key(i);
+			deleteLink.href = "#";
+/* 			deleteLink.addEventListener('click', deleteRelease); */
+			deleteLi.appendChild(deleteLink);
+			entityDetails.appendChild(deleteLi);
 		}
 	}
 	
