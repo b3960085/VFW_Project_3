@@ -191,7 +191,7 @@ window.addEventListener("DOMContentLoaded", function(){
 		}
 		el('songCount').value = 50;
 		el('opinion').value = "";
-		el('favorite').setAttribute("checked", "");
+		el('favorite').removeAttribute("checked");
 	}
 	
 	function validateInput() {
