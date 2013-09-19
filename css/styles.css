@@ -104,3 +104,8 @@ ul, li {
 	width: 70%;
 	vertical-align: middle;
 }
+
+#required {
+	font-size: smaller;
+	margin: 0 0 0 15px;
+}
