@@ -42,12 +42,15 @@ window.addEventListener("DOMContentLoaded", function(){
 			el('frame').removeChild(el('entities'));
 			document.forms[0].style.display = "block";
 		}
+		resetForm();
 	}
 	
 	function removeAllEntities() {
 		if (localStorage.length > 0) {
-			localStorage.clear();
-			alert('All stored data has been removed.');
+			if (confirm("Remove all entries?")) {
+				localStorage.clear();
+				alert('All stored data has been removed.');
+			}
 		} else {
 			alert('There are no entries to be removed.');
 		}
@@ -73,18 +76,27 @@ window.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 	
-	function addEntity(){
-		var key = Math.floor(Math.random()*20131104);
-		var entity = {};
-			entity.artistName = ["Album Artist: ", el('artistName').value];
-			entity.albumName = ["Album Name: ", el('albumName').value];
-			entity.releaseDate = ["Release Date: ", el('releaseDate').value];
-			entity.releaseType = ["Release Type: ", el('releaseType').value];
-			entity.releaseArtist = ["Release Artists: ", getReleaseArtistValue()];
-			entity.songCount = ["Number of songs: ", el('songCount').value];
-			entity.opinion = ["Opinion: ", el('opinion').value];
-			entity.favorite = ["Favorite: ", isFavorite()];
-		localStorage.setItem(key, JSON.stringify(entity))
+	function addEntity(key){
+		if (validateInput()) {
+			if (this.key == null) {
+				var key = Math.floor(Math.random()*20131104);
+			} else {
+				var key = this.key;
+			}
+			var entity = {};
+				entity.artistName = ["Album Artist: ", el('artistName').value];
+				entity.albumName = ["Album Name: ", el('albumName').value];
+				entity.releaseDate = ["Release Date: ", el('releaseDate').value];
+				entity.releaseType = ["Release Type: ", el('releaseType').value];
+				entity.releaseArtist = ["Release Artists: ", getReleaseArtistValue()];
+				entity.songCount = ["Number of songs: ", el('songCount').value];
+				entity.opinion = ["Opinion: ", el('opinion').value];
+				entity.favorite = ["Favorite: ", isFavorite()];
+			localStorage.setItem(key, JSON.stringify(entity))
+			alert("Release saved.")
+			resetForm();
+			
+		}
 	}
 
 	function retrieveEntities() {
@@ -123,13 +135,15 @@ window.addEventListener("DOMContentLoaded", function(){
 			deleteLink.innerHTML = "Delete Release";
 			deleteLink.key = localStorage.key(i);
 			deleteLink.href = "#";
-/* 			deleteLink.addEventListener('click', deleteRelease); */
+			deleteLink.addEventListener('click', deleteRelease);
 			deleteLi.appendChild(deleteLink);
 			entityDetails.appendChild(deleteLi);
 		}
 	}
 	
 	function editRelease() {
+		changeFormat();
+	
 		var item = JSON.parse(localStorage.getItem(this.key));
 		
 		el('artistName').value = item.artistName[1];
@@ -149,12 +163,71 @@ window.addEventListener("DOMContentLoaded", function(){
 		el('opinion').value = item.opinion[1];
 		if(item.favorite[1] == "Yes") el('favorite').setAttribute("checked", "checked");
 		
-		changeFormat();
-		el('submit').removeEventListener("click", addEntity);
 		el('submit').value = "Update Release";
-/* 		el('submit').addEventListener("click", updateRelease); */
 		el('submit').key = this.key;
+	}
+	
+	function deleteRelease() {
+		if (confirm("Remove release from collection?")) {
+			localStorage.removeItem(this.key);
+			alert("Release removed.");
+			window.location.reload();
+		}
+	}
+	
+	function resetForm () {
+		el('submit').key = null;
+		el('submit').value = "Add Release to Collection";
+		el('artistName').value = "";
+		el('albumName').value = "";
+		el('releaseDate').value = "";
+		el('releaseType').value = "";
+		/* Release Artist */
+		var artistReleaseOptions = document.forms[0].releaseArtists;
+		for (var i = 0; i < artistReleaseOptions.length; i++) {
+			if(artistReleaseOptions[i].value == "Single Artist"){
+				artistReleaseOptions[i].setAttribute("checked", "checked");
+			}
+		}
+		el('songCount').value = 50;
+		el('opinion').value = "";
+		el('favorite').setAttribute("checked", "");
+	}
+	
+	function validateInput() {
+		el ('errors').innerHTML = "";
+		el('artistName').style.border = "1px solid black";
+		el('albumName').style.border = "1px solid black";
+		el('releaseDate').style.border = "1px solid black";
+		el('releaseType').style.border = "1px solid black";
 		
+		var errorMsg = [];
+		if (el('artistName').value === "") {
+			errorMsg.push("Album artist required.")
+			el('artistName').style.border = "1px solid red";
+		}
+		if (el('albumName').value === "") {
+			errorMsg.push("Album name required.")
+			el('albumName').style.border = "1px solid red";
+		}
+		if (el('releaseDate').value === "") {
+			errorMsg.push("Release date required.")
+			el('releaseDate').style.border = "1px solid red";
+		}
+		if (el('releaseType').value === "") {
+			errorMsg.push("Release Type required.")
+			el('releaseType').style.border = "1px solid red";
+		}
+		if (errorMsg.length > 0) {
+			for (var i = 0; i < errorMsg.length; i++) {
+				var error = document.createElement('li')
+				error.innerHTML = errorMsg[i];
+				el('errors').appendChild(error);
+			}
+			return false;
+		} else {
+			return true;
+		}
 	}
 	
 	// Add dropdown menu
